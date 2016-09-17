@@ -17,9 +17,10 @@ classLsts = [[1,2,3,4,5],[1],[2],[3],[4],[5]]
 eigenValDict = {}
 dimDict = {}
 maxMinDict = {}
+imgLst = []
 
 ##Generating the EigenNodules
-for classLst in classLsts:    
+for iClass, classLst in enumerate(classLsts):    
     
     imgShape, eigVals, eigVecs = createEigenNodules(instanceIDsLabels, classLst, 10, screePlot = True, imgFolderLoc = './nodules')
     
@@ -31,7 +32,9 @@ for classLst in classLsts:
     for index, arr in enumerate(eigVecs):
         imgFileName = './eigenNodulesGlobalScaled2/'+','.join(map(str, classLst))+'_PC'+str(index+1)+'.png'
         img = genEigenImg(arr, imgShape, eigVecs.max(), eigVecs.min(), useGlobalBounds = True)
-        imsave(imgFileName, img)
+        #imsave(imgFileName, img)
+        if iClass == 1:
+            imgLst.append(img)
         
 eigValDf = pd.DataFrame(eigenValDict)
 eigValDf.to_csv('./eigenValues.csv')

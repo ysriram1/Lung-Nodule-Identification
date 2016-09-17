@@ -117,20 +117,21 @@ def createEigenNodules(imgLabelsTbl, classLst, eigenCount, screePlot = True, img
 
 # returns value in a different scale
 
-def maxMinScale(x, xMin, xMax, nMin, nMax):
-    return (nMax-nMin)*((x - xMin)/(xMax-xMin)) + nMin
+def maxMinScale(x, inMin, inMax, outMin, outMax):
+    return (outMax-outMin)*((x - inMin)/(inMax-inMin)) + outMin
 
-# returns the image matrix. useGlobalBounds also splits positive and negative bounds before scaling them seperately
+# returns the image matrix. 
+# Options:
+# useGlobalBounds also splits positive and negative bounds before scaling them seperately
+
 def genEigenImg(eigenVec, imgShape, globalMax, globalMin, useGlobalBounds = True):    
     
     arr = eigenVec
 
     if useGlobalBounds:
-        scaledArrFirst = [maxMinScale(x,0,arr.max(),0,globalMax) if x >= 0 else\
-        maxMinScale(x,arr.min(),0,globalMin,0) for x in arr]
-        scaledArrSecond = [maxMinScale(x,0,globalMax,127,255) if x >= 0 else\
-        maxMinScale(x,globalMin,0,0,126) for x in scaledArrFirst]
-        reshapedEigenImg = np.reshape(scaledArrSecond, newshape=imgShape)         
+        scaledArr= [maxMinScale(x,0,globalMax,127.5,255) if x >= 0 else\
+                    maxMinScale(x,globalMin,0, 0, 127.49) for x in arr]
+        reshapedEigenImg = np.reshape(scaledArr, newshape=imgShape)         
     else:
         reshapedEigenImg = np.reshape(255*(arr - arr.min())/(arr.max()-arr.min()), newshape=imgShape)
 
