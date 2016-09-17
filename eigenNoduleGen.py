@@ -16,11 +16,8 @@ from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 from scipy.misc import imsave
 
-####################FUNCTIONSD###################################################
-def readDicom(fileLoc):
-    return unrollMatrix(M)
-
-
+####################FUNCTIONSD#################################################
+# Unrolls a matrix into a single vector
 def unrollMatrix(M):
     unrollM = np.zeros(shape=[1,M.shape[0]*M.shape[1]])
     startIndex = 0; endIndex = M.shape[1]
@@ -29,8 +26,6 @@ def unrollMatrix(M):
         startIndex = endIndex
         endIndex =  endIndex + M.shape[1]
     return unrollM
-
-from sklearn.preprocessing import StandardScaler
 
 def reduceImageSizePCA(imageMatrix, varAccount = 0.9):
     normalizedMatrix = StandardScaler().fit_transform(imageMatrix)
@@ -119,15 +114,31 @@ def createEigenNodules(imgLabelsTbl, classLst, eigenCount, screePlot = True, img
     
     return imgShape, redImgMat.explained_variance_ratio_[:eigenCount], redImgMat.components_[:eigenCount]
 
-# returns the image matrix
-def genEigenImg(eigenVec, imgShape):
-    arr= eigenVec
-    reshapedEigenImg = np.reshape(255*(arr - arr.min())/(arr.max()-arr.min()), newshape=imgShape)
+
+# returns value in a different scale
+
+def maxMinScale(x, xMin, xMax, nMin, nMax):
+    return (nMax-nMin)*((x - xMin)/(xMax-xMin)) + nMin
+
+# returns the image matrix. useGlobalBounds also splits positive and negative bounds before scaling them seperately
+def genEigenImg(eigenVec, imgShape, globalMax, globalMin, useGlobalBounds = True):    
+    
+    arr = eigenVec
+
+    if useGlobalBounds:
+        scaledArrFirst = [maxMinScale(x,0,arr.max(),0,globalMax) if x >= 0 else\
+        maxMinScale(x,arr.min(),0,globalMin,0) for x in arr]
+        scaledArrSecond = [maxMinScale(x,0,globalMax,127,255) if x >= 0 else\
+        maxMinScale(x,globalMin,0,0,126) for x in scaledArrFirst]
+        reshapedEigenImg = np.reshape(scaledArrSecond, newshape=imgShape)         
+    else:
+        reshapedEigenImg = np.reshape(255*(arr - arr.min())/(arr.max()-arr.min()), newshape=imgShape)
+
     img = Image.fromarray(reshapedEigenImg)
     img.show()
     return reshapedEigenImg
 
-
+###############################################################################
 
 
 
