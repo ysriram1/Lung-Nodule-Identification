@@ -14,7 +14,6 @@ from PIL import Image
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
-from scipy.misc import imsave
 
 ####################FUNCTIONSD#################################################
 # Unrolls a matrix into a single vector
@@ -134,7 +133,7 @@ def genEigenImg(eigenVec, imgShape, globalMax, globalMin, useGlobalBounds = True
         reshapedEigenImg = np.reshape(scaledArr, newshape=imgShape)         
     else:
         reshapedEigenImg = np.reshape(255*(arr - arr.min())/(arr.max()-arr.min()), newshape=imgShape)
-
+    
     img = Image.fromarray(reshapedEigenImg)
     img.show()
     return reshapedEigenImg
