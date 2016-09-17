@@ -5,9 +5,13 @@ Created on Thu Sep 15 00:25:46 2016
 @author: SYARLAG1
 """
 import os
-os.chdir('C:/Users/SYARLAG1/Documents/Lung-Nodule-Identification')    
+from scipy.misc import toimage
+import matplotlib.pyplot as plt
+import pylab
 
-from eigenNoduleGen import * 
+os.chdir('C:/Users/SYARLAG1/Documents/Lung-Nodule-Identification/')    
+
+#from eigenNoduleGen import * 
 
 varLst = ['InstanceID','Labels']
 instanceIDsLabels = pd.read_csv('./LIDC_REU2015.csv', usecols=varLst) 
@@ -30,11 +34,10 @@ for iClass, classLst in enumerate(classLsts):
     
     # Visual the top 10 eigen Nodules
     for index, arr in enumerate(eigVecs):
-        imgFileName = './eigenNodulesGlobalScaled2/'+','.join(map(str, classLst))+'_PC'+str(index+1)+'.png'
+        imgFileName = './eigenNodulesGlobalScaled/'+','.join(map(str, classLst))+'_PC'+str(index+1)+'.png'
         img = genEigenImg(arr, imgShape, eigVecs.max(), eigVecs.min(), useGlobalBounds = True)
-        #imsave(imgFileName, img)
-        if iClass == 1:
-            imgLst.append(img)
+        cv2.imwrite(imgFileName, img)
+
         
 eigValDf = pd.DataFrame(eigenValDict)
 eigValDf.to_csv('./eigenValues.csv')
