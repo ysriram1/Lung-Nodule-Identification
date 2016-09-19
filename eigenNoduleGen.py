@@ -123,13 +123,17 @@ def maxMinScale(x, inMin, inMax, outMin, outMax):
 # Options:
 # useGlobalBounds also splits positive and negative bounds before scaling them seperately
 # normalize results in a normalize vector being used
+# useLocalwithClip redoes global clip but with local bounds
 
-def genEigenImg(eigenVec, imgShape, globalMax, globalMin, useGlobalBounds = True, normalize = True, displayImg=True):    
+def genEigenImg(eigenVec, imgShape, globalMax, globalMin, useLocalwithClip = True, useGlobalBounds = False, normalize = True, displayImg=True):    
     
     if normalize: arr = eigenVec/np.linalg.norm(eigenVec)
     else: arr = eigenVec
-
-    if useGlobalBounds:
+    if useLocalwithClip:
+        scaledArr= [maxMinScale(x,0,arr.max(),127.5,255) if x >= 0 else\
+                    maxMinScale(x,arr.min(),0, 0, 127.49) for x in arr]
+        reshapedEigenImg = np.reshape(scaledArr, newshape=imgShape)       
+    elif useGlobalBounds:
         scaledArr= [maxMinScale(x,0,globalMax,127.5,255) if x >= 0 else\
                     maxMinScale(x,globalMin,0, 0, 127.49) for x in arr]
         reshapedEigenImg = np.reshape(scaledArr, newshape=imgShape)         

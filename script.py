@@ -40,8 +40,8 @@ for iClass, classLst in enumerate(classLsts):
     
     # Visualize the top 10 eigen Nodules
     for index, arr in enumerate(eigVecs):
-        imgFileName = './normalizedEigenNodulesGlobalScaled/'+','.join(map(str, classLst))+'_PC'+str(index+1)+'.png'
-        img = genEigenImg(arr, imgShape, eigVecs.max(), eigVecs.min(), useGlobalBounds = True, normalize=False, displayImg=False)
+        imgFileName = './EigenNodulesLocalScaledwZeroCenter/'+','.join(map(str, classLst))+'_PC'+str(index+1)+'.png'
+        img = genEigenImg(arr, imgShape, eigVecs.max(), eigVecs.min(), useLocalwithClip=True, normalize=False, displayImg=False)
         cv2.imwrite(imgFileName, img) # currently this is the only func that doesnt auto normalize
         
 eigValDf = pd.DataFrame(eigenValDict)
