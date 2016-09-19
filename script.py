@@ -4,12 +4,15 @@ Created on Thu Sep 15 00:25:46 2016
 
 @author: SYARLAG1
 """
+
+
+import cv2
 import os
-from scipy.misc import toimage
-import matplotlib.pyplot as plt
-import pylab
+import pandas as pd
 
 os.chdir('C:/Users/SYARLAG1/Documents/Lung-Nodule-Identification/')    
+
+from eigenNoduleGen import *
 
 #from eigenNoduleGen import * 
 
@@ -34,9 +37,9 @@ for iClass, classLst in enumerate(classLsts):
     
     # Visual the top 10 eigen Nodules
     for index, arr in enumerate(eigVecs):
-        imgFileName = './eigenNodulesGlobalScaled/'+','.join(map(str, classLst))+'_PC'+str(index+1)+'.png'
-        img = genEigenImg(arr, imgShape, eigVecs.max(), eigVecs.min(), useGlobalBounds = True)
-        cv2.imwrite(imgFileName, img)
+        imgFileName = './normalizedEigenNodulesGlobalScaled/'+','.join(map(str, classLst))+'_PC'+str(index+1)+'.png'
+        img = genEigenImg(arr, imgShape, eigVecs.max(), eigVecs.min(), useGlobalBounds = True, normalize=True)
+        cv2.imwrite(imgFileName, img) # currently this is the only func that doesnt auto normalize
 
         
 eigValDf = pd.DataFrame(eigenValDict)

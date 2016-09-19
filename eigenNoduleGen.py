@@ -122,10 +122,12 @@ def maxMinScale(x, inMin, inMax, outMin, outMax):
 # returns the image matrix. 
 # Options:
 # useGlobalBounds also splits positive and negative bounds before scaling them seperately
+# normalize results in a normalize vector being used
 
-def genEigenImg(eigenVec, imgShape, globalMax, globalMin, useGlobalBounds = True):    
+def genEigenImg(eigenVec, imgShape, globalMax, globalMin, useGlobalBounds = True, normalize = True):    
     
-    arr = eigenVec
+    if normalize: arr = eigenVec/np.linalg.norm(eigenVec)
+    else: arr = eigenVec
 
     if useGlobalBounds:
         scaledArr= [maxMinScale(x,0,globalMax,127.5,255) if x >= 0 else\
