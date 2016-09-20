@@ -27,25 +27,35 @@ eigenVecDict = {}
 dimDict = {}
 maxMinDict = {}
 imgLst = []
+imageMatDict = {}
 
 ##Generating the EigenNodules
 for iClass, classLst in enumerate(classLsts):    
     
-    imgShape, eigVals, eigVecs = createEigenNodules(instanceIDsLabels, classLst, 10, screePlot = True, imgFolderLoc = './nodules')
+    imgShape, eigVals, eigVecs,fullImageMat = createEigenNodules(instanceIDsLabels, classLst, 10, screePlot = True, imgFolderLoc = './nodules')
     
     eigenValDict[tuple(classLst)] = eigVals    
     dimDict[tuple(classLst)] = imgShape    
     maxMinDict[tuple(classLst)] = (eigVecs.max(),eigVecs.min())
     eigenVecDict[tuple(classLst)] =  eigVecs
+    imageMatDict[tuple(classLst)] = fullImageMat[:]    
     
     # Visualize the top 10 eigen Nodules
     for index, arr in enumerate(eigVecs):
         imgFileName = './EigenNodulesLocalScaledwZeroCenter/'+','.join(map(str, classLst))+'_PC'+str(index+1)+'.png'
         img = genEigenImg(arr, imgShape, eigVecs.max(), eigVecs.min(), useLocalwithClip=True, normalize=False, displayImg=False)
-        cv2.imwrite(imgFileName, img) # currently this is the only func that doesnt auto normalize
+        #cv2.imwrite(imgFileName, img) # currently this is the only func that doesnt auto normalize
         
 eigValDf = pd.DataFrame(eigenValDict)
 eigValDf.to_csv('./eigenValues.csv')
+
+## Gen mean images
+for classLst in imageMatDict.keys():
+    print imageMatDict[classLst].shape
+    imgFileName = './meanImages/'+','.join(map(str, classLst))+'_PC'+str(index+1)+'.TIFF'
+    img = np.reshape(np.mean(imageMatDict[classLst],0), newshape=dimDict[classLst])
+    imsave(imgFileName, img)
+
 
 
 ##Saving TIFF images from negative arrays

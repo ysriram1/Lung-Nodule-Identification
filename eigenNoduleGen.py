@@ -111,7 +111,7 @@ def createEigenNodules(imgLabelsTbl, classLst, eigenCount, screePlot = True, img
 
     imgShape = (maxRow, maxCol)
     
-    return imgShape, redImgMat.explained_variance_ratio_[:eigenCount], redImgMat.components_[:eigenCount]
+    return imgShape, redImgMat.explained_variance_ratio_[:eigenCount], redImgMat.components_[:eigenCount], fullImageMat
 
 
 # returns value in a different scale
